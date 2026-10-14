@@ -14,6 +14,20 @@ The recording goes inside an iPhone mockup on a light background. The camera mov
 
 That's it.
 
+## Cursor and other AI agents
+
+Works in any agent that can run terminal commands; it does best if the agent can also look at images.
+
+1. Copy the folder into your project: `cp -r skills/iphone-screencast-promo <your-project>/skills/`
+2. Add this to the agent's instructions file — Cursor: `.cursor/rules/screencast-promo.mdc`, Codex: `AGENTS.md`, Gemini CLI: `GEMINI.md`, Copilot: `.github/copilot-instructions.md`:
+
+```
+When I ask for a promo video from an iPhone screen recording,
+follow skills/iphone-screencast-promo/SKILL.md and run its scripts.
+```
+
+3. Give the agent the recording and ask: **"Make a promo video from this screencast."**
+
 ## Skills
 
 - [iPhone Screencast → Promo Video](skills/iphone-screencast-promo/SKILL.md) — finds the taps in the recording from frame differences, places a calm camera (one push in, top or bottom edge of the phone shown when the action is there, one stronger push for details, a long pull out at the end), speeds up typing, and renders the video. Ships two scripts: `render.py` (mockup, camera, tap circles, status bar, ffmpeg encode) and `find_events.py` (tap and transition finder), plus a real example config.
