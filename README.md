@@ -6,19 +6,20 @@ The recording goes inside an iPhone mockup on a light background. The camera mov
 
 ## How to use
 
-1. Put the skill into Claude (once):
-   - **Claude Code:** `cp -r skills/telegram-style-video ~/.claude/skills/`
-   - **claude.ai / Claude app:** zip the `skills/telegram-style-video` folder, then Settings → Capabilities → Skills → Upload skill.
-2. Send Claude your iPhone screen recording and write: **"Make a promo video from this screencast."**
-3. Ask for changes in plain words: "fewer zooms", "show the edges of the phone", "zoom in on the menu".
+You don't need git or a terminal for Claude.
 
-That's it.
+1. Download **[telegram-style-video-skill.zip](telegram-style-video-skill.zip)** (open the file, then the download button on the right).
+2. Add it to Claude once: claude.ai or the Claude app → Settings → Capabilities → Skills → **Upload skill** → pick the zip.
+3. Open a new chat, attach your iPhone screen recording and write: **"Make a promo video from this screencast."**
+4. Ask for changes in plain words: "fewer zooms", "show the edges of the phone", "zoom in on the menu".
+
+**Claude Code** instead of the app: clone the repo and run `cp -r skills/telegram-style-video ~/.claude/skills/`.
 
 ## Cursor and other AI agents
 
 Works in any agent that can run terminal commands; it does best if the agent can also look at images.
 
-1. Copy the folder into your project: `cp -r skills/telegram-style-video <your-project>/skills/`
+1. Download the repo (Code → Download ZIP, or `git clone`) and copy the folder into your project: `cp -r skills/telegram-style-video <your-project>/skills/`
 2. Add this to the agent's instructions file — Cursor: `.cursor/rules/telegram-style-video.mdc`, Codex: `AGENTS.md`, Gemini CLI: `GEMINI.md`, Copilot: `.github/copilot-instructions.md`:
 
 ```
