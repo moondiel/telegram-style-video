@@ -1,0 +1,8 @@
+work/
+*.mp4
+*.mov
+*.MP4
+frames/
+prev_*.png
+__pycache__/
+.DS_Store
