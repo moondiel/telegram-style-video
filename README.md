@@ -1,108 +1,23 @@
 # telegram-video
 
-Делает из скринкаста iPhone квадратное промо-видео: экран внутри макета iPhone на светлом фоне,
-плавные приближения камеры туда, где происходит действие, кружки на тапах, ускоренный набор
-текста и чистый статус-бар 9:41 вместо часов и красной плашки записи.
+Turn an iPhone screen recording into a polished square promo video.
 
-Результат: MP4 1080×1080, 60 fps, H.264.
+The recording goes inside an iPhone mockup on a light background. The camera moves slowly to where things happen, every tap gets a circle, typing is sped up, and the clock and red recording pill are replaced by a clean 9:41 status bar. Output: MP4, 1080×1080, 60 fps.
 
-## Что нужно
+## How to use
 
-- Python 3.9+ и `pip install -r requirements.txt` (Pillow, numpy)
-- ffmpeg (`brew install ffmpeg`)
+1. Put the skill into Claude (once):
+   - **Claude Code:** `cp -r skills/iphone-screencast-promo ~/.claude/skills/`
+   - **claude.ai / Claude app:** zip the `skills/iphone-screencast-promo` folder, then Settings → Capabilities → Skills → Upload skill.
+2. Send Claude your iPhone screen recording and write: **"Make a promo video from this screencast."**
+3. Ask for changes in plain words: "fewer zooms", "show the edges of the phone", "zoom in on the menu".
 
-## Как сделать видео
+That's it.
 
-### 1. Нарезать скринкаст на кадры
+## Skills
 
-```bash
-mkdir -p work/frames
-ffmpeg -v error -i IMG_1234.MP4 -vf "fps=30,scale=576:1280" -start_number 0 work/frames/%04d.png
-```
+- [iPhone Screencast → Promo Video](skills/iphone-screencast-promo/SKILL.md) — finds the taps in the recording from frame differences, places a calm camera (one push in, top or bottom edge of the phone shown when the action is there, one stronger push for details, a long pull out at the end), speeds up typing, and renders the video. Ships two scripts: `render.py` (mockup, camera, tap circles, status bar, ffmpeg encode) and `find_events.py` (tap and transition finder), plus a real example config.
 
-Скрипт всегда работает с кадрами 576×1280, 30 fps, от `0000.png`. Любая запись экрана iPhone
-приводится к этому размеру.
+## Without Claude
 
-### 2. Найти тапы
-
-```bash
-python3 find_events.py work > work/events.txt
-```
-
-Скрипт печатает каждое изменение на экране: время, сколько пикселей поменялось и где.
-
-- Маленькая рамка, появившаяся сама по себе (подсветилась строка или кнопка), это касание.
-  Её время это время тапа, центр рамки это точка тапа.
-- Большая рамка на весь экран сразу после неё это переход, который вызвал тап.
-- Повторяющиеся маленькие рамки над клавиатурой это набор текста.
-
-Чтобы быстро увидеть всю историю целиком, сделай лист кадров:
-
-```bash
-ffmpeg -v error -i IMG_1234.MP4 -vf "fps=2,scale=160:-1,tile=14x6" -frames:v 1 work/sheet.png
-```
-
-### 3. Написать `work/config.json`
-
-Пример целиком: [example/config.json](example/config.json).
-
-```json
-{
-  "src_end": 40.6,
-  "speed": [[5.6, 10.25, 1.6]],
-  "cam":  [[0.0, 1.0, 288, 640], [1.2, 1.0, 288, 640], [2.6, 1.3, 288, 505], [40.6, 1.0, 288, 640]],
-  "taps": [[1.00, 504, 124, 0], [35.70, 110, 764, 0.6]]
-}
-```
-
-Все времена в секундах исходной записи. Координаты в кадре 576×1280, центр `288, 640`.
-
-| Поле | Что это |
-|---|---|
-| `src_end` | где закончить запись (последнее действие + ~1,5 с) |
-| `speed` | `[начало, конец, во сколько раз]`: куски, которые ускорить, обычно набор текста ×1,6 |
-| `cam` | ключевые точки камеры `[время, зум, cx, cy]`, между ними плавный переход |
-| `taps` | `[время, x, y, удержание]`; удержание > 0 для долгого нажатия, кружок растёт, пока палец держат |
-
-Как ставить камеру, чтобы было красиво:
-
-- **Мало движений, и все медленные.** Сначала ~1 с на зуме 1, потом один наезд до ~1,3, и этот
-  кадр держится весь сценарий. Каждое движение длится 1,2–1,8 с. Не приближать на каждый тап.
-- **Показывать край телефона рядом с действием.** Если всё происходит наверху (навбар, списки,
-  поля), ставь `cy ≈ 505` при зуме 1,3: в кадре будет верх телефона с Dynamic Island и 9:41.
-  Если действие внизу (шторка, таб-бар), сдвигай на `cy ≈ 775`, чтобы был виден нижний край.
-- Сильнее приближать (~1,55) только там, где нужна деталь, например меню по долгому нажатию.
-- В конце долгий отъезд до зума 1 к `src_end`.
-- На зуме z видно примерно `1280 / (0,93·z)` пикселей исходника по высоте. Проверь, что каждая
-  точка тапа в этот момент попадает в кадр.
-
-### 4. Проверить кадры и отрендерить
-
-```bash
-PREVIEW=3,8,16,26 python3 render.py work            # кадры в work/prev_*.png
-python3 render.py work work/promo.mp4               # ~3 минуты на 40 с видео
-```
-
-В `PREVIEW` указывается время итогового видео, а не исходника. Сначала идёт 0,6 с вступления,
-а ускоренные куски становятся короче.
-
-Проверить готовое видео одним листом:
-
-```bash
-ffmpeg -v error -i work/promo.mp4 -vf "fps=1,scale=220:-1,tile=8x5" -frames:v 1 work/check.png
-```
-
-## Скилл для Claude
-
-В [skill/SKILL.md](skill/SKILL.md) та же инструкция в виде скилла: Claude сам нарезает кадры,
-находит тапы, пишет `config.json` и рендерит видео. Оба скрипта встроены в скилл, так что он
-работает и без этого репозитория.
-
-## Файлы
-
-```
-render.py           рендер: макет, камера, тапы, статус-бар, сборка через ffmpeg
-find_events.py      поиск тапов и переходов по разнице кадров
-example/config.json настройки для примера (Profile Links, 41 с скринкаст)
-skill/SKILL.md      скилл для Claude
-```
+Needs Python 3.9+, `pip install -r requirements.txt`, and ffmpeg (`brew install ffmpeg`). Follow the steps in [SKILL.md](skills/iphone-screencast-promo/SKILL.md): extract frames, find taps, write `config.json`, render.
