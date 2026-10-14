@@ -1,6 +1,6 @@
 ---
 name: telegram-style-video
-description: Turn an iPhone screen recording into a polished square promo video — the recording inside an iPhone mockup on a light background, slow camera zooms that follow the action, tap circles, sped-up typing, and a clean 9:41 status bar instead of the clock and red recording pill. Use this skill whenever the user sends an iPhone screencast / screen recording and wants a promo, demo, concept, launch or "Dribbble-style" video of an app flow — even if they only say "make a video from this", "make it look nice", or point at a reference video in this style. Also use it for follow-ups on such a video: "fewer zooms", "smoother", "show the edges of the phone", "zoom in on the menu".
+description: Turn an iPhone screen recording into a polished square promo video — the recording inside an iPhone mockup on a light background, slow camera zooms that follow the action, tap circles, sped-up typing, and a clean 9:41 status bar instead of the clock and red recording pill. Use this skill whenever the user sends an iPhone screencast / screen recording and wants a promo, demo, concept, launch or "Dribbble-style" video of an app flow — even if they only say "make a video from this", "make it look nice", or point at a reference video in this style. Also use it for follow-ups on such a video, like "fewer zooms", "smoother", "show the edges of the phone", "zoom in on the menu".
 tools: Read, Write, Bash
 ---
 
