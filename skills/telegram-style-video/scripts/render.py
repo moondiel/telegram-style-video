@@ -203,12 +203,27 @@ def build_static():
     return layer, screen_mask
 
 
+def hex_rgb(h):
+    h = h.lstrip("#")
+    return np.array([int(h[i:i + 2], 16) for i in (0, 2, 4)], np.float32)
+
+
+def background_colors():
+    """config "bg": "#RRGGBB" (edge made a bit darker) or ["#centre", "#edge"]."""
+    bg = CONFIG.get("bg")
+    if not bg:
+        return np.array([238, 238, 243], np.float32), np.array([222, 223, 230], np.float32)
+    if isinstance(bg, str):
+        c0 = hex_rgb(bg)
+        return c0, c0 * 0.93
+    return hex_rgb(bg[0]), hex_rgb(bg[1])
+
+
 def build_background():
     yy, xx = np.mgrid[0:SIZE, 0:SIZE].astype(np.float32)
     r = np.sqrt((xx - SIZE / 2) ** 2 + (yy - SIZE * 0.45) ** 2) / (SIZE * 0.72)
     r = np.clip(r, 0, 1)
-    c0 = np.array([238, 238, 243], np.float32)
-    c1 = np.array([222, 223, 230], np.float32)
+    c0, c1 = background_colors()
     img = c0 + (c1 - c0) * (r[..., None] ** 1.4)
     noise = np.random.default_rng(3).normal(0, 0.8, img.shape[:2])[..., None]  # avoid banding
     return Image.fromarray(np.clip(img + noise, 0, 255).astype(np.uint8), "RGB").convert("RGBA")

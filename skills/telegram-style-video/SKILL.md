@@ -56,6 +56,7 @@ All times are **source** seconds; x/y in the 576×1280 frame (centre 288, 640). 
 | `speed` | `[start, end, factor]` — speed up typing, usually 1.6× |
 | `cam` | `[time, zoom, cx, cy]` keyframes, eased between |
 | `taps` | `[time, x, y, hold]` — hold > 0 for a long press |
+| `bg` | optional background: `"#RRGGBB"` or `["#centre", "#edge"]` for a gradient. Default light grey. Use it when the user asks for a different background colour |
 
 **Camera rules — pick them automatically, don't ask the user:**
 

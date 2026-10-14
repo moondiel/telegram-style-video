@@ -13,7 +13,7 @@ You don't need git or a terminal for Claude.
 1. Download **[telegram-style-video-skill.zip](telegram-style-video-skill.zip)** (open the file, then the download button on the right).
 2. Add it to Claude once: claude.ai or the Claude app → Settings → Capabilities → Skills → **Upload skill** → pick the zip.
 3. Open a new chat, attach your iPhone screen recording and write: **"Make a promo video from this screencast."**
-4. Ask for changes in plain words: "fewer zooms", "show the edges of the phone", "zoom in on the menu".
+4. Ask for changes in plain words: "fewer zooms", "show the edges of the phone", "zoom in on the menu", "make the background blue".
 
 **Claude Code** instead of the app: clone the repo and run `cp -r skills/telegram-style-video ~/.claude/skills/`.
 
