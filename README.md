@@ -1,4 +1,4 @@
-# telegram-video
+# Telegram Style Video
 
 Turn an iPhone screen recording into a polished square promo video.
 
